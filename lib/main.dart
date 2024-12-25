@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'log_page.dart';
-
+import 'screens/log_page.dart';
+import 'screens/registration_page.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -13,9 +13,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LogApp(),
+      home: RegistrationPage(),
 
 
     );

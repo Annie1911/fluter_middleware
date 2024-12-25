@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:programation_distribued_project/services/api_service.dart';
-import 'models/log_model.dart';
+import '../models/log_model.dart';
 
 class LogScreen extends StatefulWidget {
+  const LogScreen({super.key});
+
 @override
 _LogScreenState createState() => _LogScreenState();
 }
@@ -21,17 +23,17 @@ class _LogScreenState extends State<LogScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Todolist Logs"),
+        title: const Text("Todolist Logs"),
       ),
       body: FutureBuilder<List<LogModel>>(
         future: logsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No logs found"));
+            return const Center(child: Text("No logs found"));
           } else {
             final logs = snapshot.data!;
             return ListView.builder(

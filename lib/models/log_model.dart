@@ -1,3 +1,5 @@
+export 'log_model.dart';
+
 class LogModel {
   final int id;
   final int statusCode;

@@ -4,10 +4,10 @@ import '../models/log_model.dart';
 
 
 class ApiService {
-static const String baseUrl = 'http://10.0.2.2:5208/api';
+static const String baseUrl = 'https://pv2qj5pz-8000.usw3.devtunnels.ms/logs';
 
 Future<List<LogModel>> fetchTodolistLogs({int skip = 0, int limit = 10}) async {
-  final response = await http.get(Uri.parse('$baseUrl/logs?skip=$skip&limit=$limit'));
+  final response = await http.get(Uri.parse('$baseUrl/?skip=$skip&limit=$limit'));
 
   if (response.statusCode == 200) {
     List<dynamic> logsJson = json.decode(response.body);
