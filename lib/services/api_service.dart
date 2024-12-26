@@ -4,7 +4,7 @@ import '../models/log_model.dart';
 
 
 class ApiService {
-static const String baseUrl = 'https://pv2qj5pz-8000.usw3.devtunnels.ms/logs';
+static const String baseUrl = 'fastapitodolist-production.up.railway.app/logs';
 
 Future<List<LogModel>> fetchTodolistLogs({int skip = 0, int limit = 10}) async {
   final response = await http.get(Uri.parse('$baseUrl/?skip=$skip&limit=$limit'));

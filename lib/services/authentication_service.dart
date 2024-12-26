@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 export 'authentication_service.dart';
 import '../screens/log_page.dart';
 
-const String baseUrl = 'https://pv2qj5pz-8000.usw3.devtunnels.ms/users';
+const String baseUrl = 'fastapitodolist-production.up.railway.app/users';
 
 Future<void> login(
     String username, String password, BuildContext context) async {
