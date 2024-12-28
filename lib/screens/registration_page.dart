@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/authentication_service.dart';
+import 'login_page.dart';
 
 class RegistrationPage extends StatelessWidget {
   const RegistrationPage({super.key});
@@ -38,6 +39,16 @@ class RegistrationPage extends StatelessWidget {
               },
               child: const Text('S\'inscrire'),
             ),
+        ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              child: const Text('Se connecter'),
+            )
+
           ],
         ),
       ),

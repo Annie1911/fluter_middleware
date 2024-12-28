@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../screens/log_page.dart';
+import 'log_screen.dart';
+
 class LogApp extends StatelessWidget {
   const LogApp({super.key});
 
@@ -58,68 +59,6 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
       ),
-    );
-  }
-}
-
-class LogScreen extends StatelessWidget {
-  final List<Map<String, String>> logs = [
-    {
-      'timestamp': '2024-12-10 10:00:00',
-      'level': 'INFO',
-      'message': 'Application started.'
-    },
-    {
-      'timestamp': '2024-12-10 10:05:23',
-      'level': 'WARNING',
-      'message': 'High memory usage detected.'
-    },
-    {
-      'timestamp': '2024-12-10 10:10:45',
-      'level': 'ERROR',
-      'message': 'Database connection failed.'
-    },
-  ];
-
-  LogScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: logs.length,
-      itemBuilder: (context, index) {
-        final log = logs[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: ListTile(
-            leading: Icon(
-              log['level'] == 'ERROR'
-                  ? Icons.error
-                  : log['level'] == 'WARNING'
-                      ? Icons.warning
-                      : Icons.info,
-              color: log['level'] == 'ERROR'
-                  ? Colors.red
-                  : log['level'] == 'WARNING'
-                      ? Colors.orange
-                      : Colors.blue,
-            ),
-            title: Text(log['message']!),
-            subtitle: Text(log['timestamp']!),
-            trailing: Text(
-              log['level']!,
-              style: TextStyle(
-                color: log['level'] == 'ERROR'
-                    ? Colors.red
-                    : log['level'] == 'WARNING'
-                        ? Colors.orange
-                        : Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

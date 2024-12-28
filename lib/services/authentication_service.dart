@@ -5,8 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 export 'authentication_service.dart';
 import '../screens/log_page.dart';
 
-const String baseUrl = 'fastapitodolist-production.up.railway.app/users';
 
+const String prodBaseUrl = 'fastapitodolist-production.up.railway.app/users';
+const String devBaseUrl = 'http://192.168.0.109:8000/users';
 Future<void> login(
     String username, String password, BuildContext context) async {
   if (username.isEmpty || password.isEmpty) {
@@ -16,7 +17,7 @@ Future<void> login(
     return;
   }
 
-  final url = Uri.parse('$baseUrl/login');
+  final url = Uri.parse('$devBaseUrl/login');
   try {
     final response = await http.post(
       url,
@@ -32,11 +33,11 @@ Future<void> login(
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
 
-      if (responseData.containsKey('token') &&
-          responseData['token'] != null &&
-          responseData['token'] is String) {
-        final String token = responseData['token'];
-        await _saveToken(token); // Sauvegarde du token dans SharedPreferences
+      if (responseData.containsKey('access_token') &&
+          responseData['access_token'] != null &&
+          responseData['access_token'] is String) {
+        final String token = responseData['access_token'];
+        await saveToken(token); // Sauvegarde du token dans SharedPreferences
 
         Navigator.pushReplacement(
           context,
@@ -62,8 +63,9 @@ Future<void> login(
   }
 }
 
-Future<void> refreshToken(String refreshToken) async {
-  final url = Uri.parse('$baseUrl/refresh-token');
+Future<void> refreshToken() async {
+  final url = Uri.parse('$devBaseUrl/refresh-token');
+  String? refreshToken = await getToken();
 
   try {
     final response = await http.post(
@@ -72,14 +74,15 @@ Future<void> refreshToken(String refreshToken) async {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'refreshToken': refreshToken,
+        'refresh_token': refreshToken??'',
+        'token_type': 'bearer'
       }),
     );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final String newToken = responseData['token'];
-      await _saveToken(
+      final String newToken = responseData['access_token'];
+      await saveToken(
           newToken); // Mettre à jour le token dans SharedPreferences
     } else {
       print('Failed to refresh token.');
@@ -89,14 +92,19 @@ Future<void> refreshToken(String refreshToken) async {
   }
 }
 
-Future<void> _saveToken(String token) async {
+Future<void> saveToken(String token) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('token', token);
+  await prefs.setString('access_token', token);
+}
+
+Future<String?> getToken() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('access_token');
 }
 
 Future<void> register(
     String username, String password, BuildContext context) async {
-  final url = Uri.parse('$baseUrl/create-user');
+  final url = Uri.parse('$devBaseUrl/create-user');
 
   if (username.isEmpty || password.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -120,11 +128,11 @@ Future<void> register(
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
 
-      if (responseData.containsKey('token') &&
-          responseData['token'] != null &&
-          responseData['token'] is String) {
-        final String token = responseData['token'];
-        await _saveToken(token); // Sauvegarde du token dans SharedPreferences
+      if (responseData.containsKey('access_token') &&
+          responseData['access_token'] != null &&
+          responseData['access_token'] is String) {
+        final String token = responseData['access_token'];
+        await saveToken(token); // Sauvegarde du token dans SharedPreferences
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Inscription réussie')),
