@@ -1,22 +1,11 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD:lib/log_screen.dart
-import '../services/api_service.dart';
 import '../models/log_model.dart';
 import 'log_detail_screen.dart';
+import '../services/api_service.dart';
 
 class LogsScreen extends StatefulWidget {
   @override
   _LogsScreenState createState() => _LogsScreenState();
-=======
-import 'package:programation_distribued_project/services/api_service.dart';
-import '../models/log_model.dart';
-
-class LogScreen extends StatefulWidget {
-  const LogScreen({super.key});
-
-@override
-_LogScreenState createState() => _LogScreenState();
->>>>>>> hqh:lib/screens/log_screen.dart
 }
 
 class _LogsScreenState extends State<LogsScreen> {
@@ -32,7 +21,6 @@ class _LogsScreenState extends State<LogsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-<<<<<<< HEAD:lib/log_screen.dart
         title: const Text('Todolist Logs'),
         backgroundColor: Colors.teal,
       ),
@@ -52,43 +40,30 @@ class _LogsScreenState extends State<LogsScreen> {
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(
-                child: Text('No logs found.', style: TextStyle(color: Colors.grey)),
+                child: Text('No logs found.',
+                    style: TextStyle(color: Colors.grey)),
+              );
+            } else {
+              final logs = snapshot.data!;
+              return ListView.builder(
+                padding: const EdgeInsets.all(10),
+                itemCount: logs.length,
+                itemBuilder: (context, index) {
+                  final log = logs[index];
+                  return LogCard(
+                    log: log,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LogDetailsScreen(logId: log.id),
+                        ),
+                      );
+                    },
+                  );
+                },
               );
             }
-
-=======
-        title: const Text("Todolist Logs"),
-      ),
-      body: FutureBuilder<List<LogModel>>(
-        future: logsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No logs found"));
-          } else {
->>>>>>> hqh:lib/screens/log_screen.dart
-            final logs = snapshot.data!;
-            return ListView.builder(
-              padding: const EdgeInsets.all(10),
-              itemCount: logs.length,
-              itemBuilder: (context, index) {
-                final log = logs[index];
-                return LogCard(
-                  log: log,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LogDetailsScreen(logId: log.id),
-                      ),
-                    );
-                  },
-                );
-              },
-            );
           },
         ),
       ),

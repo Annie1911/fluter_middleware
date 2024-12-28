@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/log_model.dart';
-import '../services/api_service.dart';
+import '../../models/log_model.dart';
+import '../../services/api_service.dart';
 
 class LogDetailsScreen extends StatelessWidget {
   final int logId;
@@ -15,7 +15,7 @@ class LogDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.teal,
       ),
       body: FutureBuilder<LogModel>(
-        future: ApiService().fetchLogById(logId),
+        future: ApiService().fetchTodoListLog(logId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

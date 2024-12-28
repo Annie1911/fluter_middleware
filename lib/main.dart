@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:programation_distribued_project/log_screen.dart';
+
 
 
 import 'screens/registration_page.dart';
@@ -16,11 +16,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-<<<<<<< HEAD
-      home: LogsScreen(),
-=======
+
       home: RegistrationPage(),
->>>>>>> hqh
+
 
 
     );

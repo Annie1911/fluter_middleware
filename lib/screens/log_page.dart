@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> pages = [
     HomeScreen(),
-    LogScreen(),
+    LogsScreen(),
     PlaceholderWidget(label: 'Settings'),
   ];
 
