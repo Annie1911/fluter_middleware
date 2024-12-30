@@ -7,20 +7,12 @@ import 'authentication_service.dart';
 class ApiService {
   static const String prodBaseUrl =
       'fastapitodolist-production.up.railway.app/logs';
-  static const String devBaseUrl = 'http://192.168.0.109:8000/logs';
-  Future<List<LogModel>> fetchTodolistLogs({int? skip, int? limit}) async {
+  static const String devBaseUrl = 'http://127.0.0.1:8000/logs';
+
+
+  Future<List<LogModel>> fetchTodolistLogs() async {
     String url = '$devBaseUrl/get-logs';
-    if (skip != null) {
-      url += '?skip=$skip';
-      if (limit!= null) {
-        url += '&limit=$limit';
-      }
-    }
-    else{
-      if (limit != null) {
-        url += '?limit=$limit';
-      }
-    }
+
     final token = await getToken(); // Récupération du token
     if (token == null) {
       throw Exception('No access token found');
@@ -43,6 +35,7 @@ class ApiService {
       throw Exception('Failed to load logs');
     }
   }
+
   /// Récupération d'un log spécifique par son ID
   Future<LogModel> fetchTodoListLog(int logId) async {
     final token = await getToken(); // Récupération du token

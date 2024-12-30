@@ -9,6 +9,9 @@ class RegistrationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController usernameController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController firstNameController = TextEditingController();
+    final TextEditingController lastNameController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -19,10 +22,29 @@ class RegistrationPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
             TextField(
               controller: usernameController,
               decoration: const InputDecoration(
                 labelText: 'Nom d\'utilisateur',
+              ),
+            ),
+            TextField(
+              controller: lastNameController,
+              decoration: const InputDecoration(
+                labelText: 'Nom',
+              ),
+            ),
+            TextField(
+              controller: firstNameController,
+              decoration: const InputDecoration(
+                labelText: 'Prénom',
               ),
             ),
             TextField(
@@ -32,14 +54,23 @@ class RegistrationPage extends StatelessWidget {
                 labelText: 'Mot de passe',
               ),
             ),
+
             ElevatedButton(
               onPressed: () {
                 register(
-                    usernameController.text, passwordController.text, context);
+                  emailController.text,
+                  usernameController.text,
+                  lastNameController.text,
+                  firstNameController.text,
+                  passwordController.text
+                  ,context,
+                );
               },
               child: const Text('S\'inscrire'),
             ),
-        ElevatedButton(
+            SizedBox(height: 25,),
+
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -47,11 +78,12 @@ class RegistrationPage extends StatelessWidget {
                 );
               },
               child: const Text('Se connecter'),
-            )
-
+            ),
           ],
         ),
       ),
     );
   }
-}
+
+
+  }
