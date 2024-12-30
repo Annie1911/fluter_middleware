@@ -199,7 +199,7 @@ class InfoField extends StatelessWidget {
             child: Text(
               value,
               style: const TextStyle(
-                color: Colors.black87,
+                color: Colors.teal,
               ),
               overflow: TextOverflow.ellipsis,
             ),

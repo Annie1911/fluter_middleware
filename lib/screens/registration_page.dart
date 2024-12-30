@@ -7,12 +7,17 @@ class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
 
   @override
+
   _RegistrationPageState createState() => _RegistrationPageState();
 }
 
+
 class _RegistrationPageState extends State<RegistrationPage> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+    final TextEditingController usernameController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController firstNameController = TextEditingController();
+    final TextEditingController lastNameController = TextEditingController();
 
   @override
   void dispose() {
@@ -51,10 +56,29 @@ class _RegistrationPageState extends State<RegistrationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
             TextField(
               controller: usernameController,
               decoration: const InputDecoration(
                 labelText: 'Nom d\'utilisateur',
+              ),
+            ),
+            TextField(
+              controller: lastNameController,
+              decoration: const InputDecoration(
+                labelText: 'Nom',
+              ),
+            ),
+            TextField(
+              controller: firstNameController,
+              decoration: const InputDecoration(
+                labelText: 'Prénom',
               ),
             ),
             TextField(
@@ -64,13 +88,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 labelText: 'Mot de passe',
               ),
             ),
+
             ElevatedButton(
               onPressed: () {
                 register(
-                    usernameController.text, passwordController.text, context);
+                  emailController.text,
+                  usernameController.text,
+                  lastNameController.text,
+                  firstNameController.text,
+                  passwordController.text
+                  ,context,
+                );
               },
               child: const Text('S\'inscrire'),
             ),
+
+            SizedBox(height: 25,),
+
+
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -85,4 +120,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ),
     );
   }
-}
+
+
+  }

@@ -13,6 +13,7 @@ class LogApp extends StatelessWidget {
         primaryColor: Colors.blue,
       ),
       home: const MainScreen(),
+
     );
   }
 }
@@ -29,8 +30,9 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> pages = [
     const HomePage(),
-    LogsScreen(),
+    LogsScreenPage(),
     const PlaceholderWidget(label: 'Settings'),
+
   ];
 
   final List<String> titles = [
@@ -43,10 +45,12 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.teal,
         title: Text(titles[currentIndex]),
       ),
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.teal,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Logs'),

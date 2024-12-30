@@ -3,72 +3,112 @@ import '../models/log_model.dart';
 import 'log_detail_screen.dart';
 import '../services/api_service.dart';
 
-class LogsScreen extends StatefulWidget {
-  const LogsScreen({super.key});
+
+class LogsScreenPage extends StatefulWidget {
+  const LogsScreenPage({super.key});
+
 
   @override
-  _LogsScreenState createState() => _LogsScreenState();
+  _LogsScreenPageState createState() => _LogsScreenPageState();
 }
 
-class _LogsScreenState extends State<LogsScreen> {
-  late Future<List<LogModel>> _logsFuture;
+class _LogsScreenPageState extends State<LogsScreenPage> {
+  late Future<List<LogModel>> logsFuture;
 
   @override
   void initState() {
     super.initState();
-    _logsFuture = ApiService().fetchTodolistLogs(skip: 0, limit: 10);
+    logsFuture = ApiService().fetchTodolistLogs();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Todolist Logs'),
-        backgroundColor: Colors.teal,
-      ),
-      body: Container(
-        color: Colors.white, // Fond blanc
-        child: FutureBuilder<List<LogModel>>(
-          future: _logsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  'Error: ${snapshot.error}',
-                  style: const TextStyle(color: Colors.redAccent),
+
+      body: FutureBuilder<List<LogModel>>(
+        future: logsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: const TextStyle(color: Colors.redAccent),
+              ),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text(
+                'Aucun log disponible',
+                style: TextStyle(color: Colors.grey),
+              ),
+            );
+          } else {
+            final logs = snapshot.data!;
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _buildStatusChart(logs),
                 ),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text('No logs found.',
-                    style: TextStyle(color: Colors.grey)),
-              );
-            } else {
-              final logs = snapshot.data!;
-              return ListView.builder(
-                padding: const EdgeInsets.all(10),
-                itemCount: logs.length,
-                itemBuilder: (context, index) {
-                  final log = logs[index];
-                  return LogCard(
-                    log: log,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LogDetailsScreen(logId: log.id),
-                        ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(10),
+                    itemCount: logs.length,
+                    itemBuilder: (context, index) {
+                      final log = logs[index];
+                      return LogCard(
+                        log: log,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LogDetailsScreen(logId: log.id),
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-              );
-            }
-          },
-        ),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
       ),
+    );
+  }
+
+  Widget _buildStatusChart(List<LogModel> logs) {
+    int success = logs.where((log) => log.statusCode == 200).length;
+    int error = logs.length - success;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildStatusBar('Success', success, Colors.green),
+        const SizedBox(width: 10),
+        _buildStatusBar('Error', error, Colors.red),
+      ],
+    );
+  }
+
+  Widget _buildStatusBar(String label, int count, Color color) {
+    return Column(
+      children: [
+        Container(
+          height: 20,
+          width: 100,
+          color: color,
+          child: Center(
+            child: Text(
+              '$label: $count',
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -77,40 +117,41 @@ class LogCard extends StatelessWidget {
   final LogModel log;
   final VoidCallback onTap;
 
+
   const LogCard({super.key, required this.log, required this.onTap});
 
   Color _getStatusColor(int statusCode) {
     if (statusCode >= 200 && statusCode < 300) {
-      return Colors.greenAccent; // Succès
+      return Colors.greenAccent;
     } else if (statusCode >= 300 && statusCode < 400) {
-      return Colors.blueAccent; // Redirection
+      return Colors.blueAccent;
     } else if (statusCode >= 400 && statusCode < 500) {
-      return Colors.orangeAccent; // Erreur client
+      return Colors.orangeAccent;
     } else if (statusCode >= 500) {
-      return Colors.redAccent; // Erreur serveur
+      return Colors.redAccent;
     } else {
-      return Colors.grey; // Indéterminé
+      return Colors.grey;
     }
   }
 
   IconData _getStatusIcon(int statusCode) {
     if (statusCode >= 200 && statusCode < 300) {
-      return Icons.check_circle; // Succès
+      return Icons.check_circle;
     } else if (statusCode >= 300 && statusCode < 400) {
-      return Icons.sync; // Redirection
+      return Icons.sync;
     } else if (statusCode >= 400 && statusCode < 500) {
-      return Icons.warning_amber_rounded; // Erreur client
+      return Icons.warning_amber_rounded;
     } else if (statusCode >= 500) {
-      return Icons.error; // Erreur serveur
+      return Icons.error;
     } else {
-      return Icons.help_outline; // Indéterminé
+      return Icons.help_outline;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white, // Fond blanc
+      color: Colors.white,
       elevation: 6,
       margin: const EdgeInsets.symmetric(vertical: 10),
       shape: RoundedRectangleBorder(
@@ -127,7 +168,7 @@ class LogCard extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    radius: 25, // Augmentation de la taille de l'icône
+                    radius: 25,
                     backgroundColor: _getStatusColor(log.statusCode),
                     child: Icon(
                       _getStatusIcon(log.statusCode),

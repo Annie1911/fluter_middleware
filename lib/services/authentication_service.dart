@@ -7,7 +7,7 @@ import '../screens/log_page.dart';
 import '../screens/login_page.dart';
 
 const String prodBaseUrl = 'fastapitodolist-production.up.railway.app/users';
-const String devBaseUrl = 'http://192.168.0.109:8000/users';
+const String devBaseUrl = 'http://127.0.0.1:8000/users';
 Future<void> login(
     String username, String password, BuildContext context) async {
   if (username.isEmpty || password.isEmpty) {
@@ -114,15 +114,22 @@ Future<void> removeToken(String tokenType) async {
 }
 
 Future<void> register(
-    String username, String password, BuildContext context) async {
+    String email,
+    String username,
+    String lastName,
+    String firstName,
+    String password,
+   BuildContext context) async {
   final url = Uri.parse('$devBaseUrl/create-user');
 
-  if (username.isEmpty || password.isEmpty) {
+  if (email.isEmpty ||username.isEmpty ||lastName.isEmpty || firstName.isEmpty || password.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Veuillez remplir tous les champs.')),
     );
     return;
   }
+
+
 
   try {
     final response = await http.post(
@@ -131,8 +138,13 @@ Future<void> register(
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
+
+        'email': email.trim(),
         'username': username.trim(),
+        'lastname': lastName.trim(),
+        'firstname': firstName.trim(),
         'password': password.trim(),
+
       }),
     );
 
@@ -157,6 +169,7 @@ Future<void> register(
     );
   }
 }
+
 
 bool isTokenExpired(String token) {
   final String? expirationClaim = getClaimValue(token, 'exp');
@@ -230,3 +243,16 @@ Future<void> loadTokenState() async {
     print('token not null');
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
