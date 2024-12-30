@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/log_model.dart';
+
 import 'authentication_service.dart';
 
 class ApiService {
@@ -20,7 +21,7 @@ class ApiService {
         url += '?limit=$limit';
       }
     }
-    final token = await getToken(); // Récupération du token
+    final token = await getToken('access_token'); // Récupération du token
     if (token == null) {
       throw Exception('No access token found');
     }
@@ -32,18 +33,19 @@ class ApiService {
       },
     );
 
+
     if (response.statusCode == 200) {
       List<dynamic> logsJson = json.decode(response.body);
       return logsJson.map((log) => LogModel.fromJson(log)).toList();
     } else {
+
       print('Error response: ${response.body}');
       throw Exception('Failed to load logs');
     }
   }
-
   /// Récupération d'un log spécifique par son ID
-  Future<LogModel> fetchTodoListLog(String logId) async {
-    final token = await getToken(); // Récupération du token
+  Future<LogModel> fetchTodoListLog(int logId) async {
+    final token = await getToken('access_token'); // Récupération du token
     if (token == null) {
       throw Exception('No access token found');
     }
@@ -62,3 +64,4 @@ class ApiService {
     }
   }
 }
+

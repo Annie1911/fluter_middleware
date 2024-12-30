@@ -1,15 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:programation_distribued_project/screens/log_page.dart';
 import '../services/authentication_service.dart';
 import 'login_page.dart';
 
-class RegistrationPage extends StatelessWidget {
+class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController usernameController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
+  _RegistrationPageState createState() => _RegistrationPageState();
+}
 
+class _RegistrationPageState extends State<RegistrationPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTokenAndData();
+  }
+
+  Future<void> _loadTokenAndData() async {
+    await loadTokenState();
+    final String? token = await getToken('access_token');
+    if (token != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LogApp(),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inscription'),
@@ -39,16 +71,15 @@ class RegistrationPage extends StatelessWidget {
               },
               child: const Text('S\'inscrire'),
             ),
-        ElevatedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
               child: const Text('Se connecter'),
-            )
-
+            ),
           ],
         ),
       ),

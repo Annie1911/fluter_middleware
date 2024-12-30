@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 export 'authentication_service.dart';
 import '../screens/log_page.dart';
-
+import '../screens/login_page.dart';
 
 const String prodBaseUrl = 'fastapitodolist-production.up.railway.app/users';
 const String devBaseUrl = 'http://192.168.0.109:8000/users';
@@ -25,8 +25,8 @@ Future<void> login(
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'username': username,
-        'password': password,
+        'username': username.trim(),
+        'password': password.trim(),
       }),
     );
 
@@ -36,8 +36,15 @@ Future<void> login(
       if (responseData.containsKey('access_token') &&
           responseData['access_token'] != null &&
           responseData['access_token'] is String) {
-        final String token = responseData['access_token'];
-        await saveToken(token); // Sauvegarde du token dans SharedPreferences
+        final String access_token = responseData['access_token'];
+        await saveToken(access_token,
+            'access_token'); // Sauvegarde du token dans SharedPreferences
+        if (responseData.containsKey('refresh_token') &&
+            responseData['refresh_token'] != null &&
+            responseData['refresh_token'] is String) {
+          final String refresh_token = responseData['refresh_token'];
+          await saveToken(refresh_token, 'refresh_token');
+        }
 
         Navigator.pushReplacement(
           context,
@@ -63,9 +70,8 @@ Future<void> login(
   }
 }
 
-Future<void> refreshToken() async {
+Future<void> refreshToken(String? token) async {
   final url = Uri.parse('$devBaseUrl/refresh-token');
-  String? refreshToken = await getToken();
 
   try {
     final response = await http.post(
@@ -73,17 +79,17 @@ Future<void> refreshToken() async {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'refresh_token': refreshToken??'',
-        'token_type': 'bearer'
+          body: jsonEncode(<String, String>{
+        'refresh_token': token??'',
+        'token_type': 'bearer',
       }),
     );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       final String newToken = responseData['access_token'];
-      await saveToken(
-          newToken); // Mettre à jour le token dans SharedPreferences
+      await saveToken(newToken,
+          'access_token'); // Mettre à jour le token dans SharedPreferences
     } else {
       print('Failed to refresh token.');
     }
@@ -92,14 +98,19 @@ Future<void> refreshToken() async {
   }
 }
 
-Future<void> saveToken(String token) async {
+Future<void> saveToken(String token, String token_type) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('access_token', token);
+  await prefs.setString(token_type, token);
 }
 
-Future<String?> getToken() async {
+Future<String?> getToken(String tokenType) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('access_token');
+  return prefs.getString(tokenType);
+}
+
+Future<void> removeToken(String tokenType) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove(tokenType);
 }
 
 Future<void> register(
@@ -120,32 +131,13 @@ Future<void> register(
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'username': username,
-        'password': password,
+        'username': username.trim(),
+        'password': password.trim(),
       }),
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-
-      if (responseData.containsKey('access_token') &&
-          responseData['access_token'] != null &&
-          responseData['access_token'] is String) {
-        final String token = responseData['access_token'];
-        await saveToken(token); // Sauvegarde du token dans SharedPreferences
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Inscription réussie')),
-        );
-
-        await login(username, password, context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text(
-                  'Inscription réussie, mais token manquant ou invalide.')),
-        );
-      }
+      await login(username, password, context);
     } else {
       String errorMessage =
           'Échec de l\'inscription. Code: ${response.statusCode}';
@@ -163,5 +155,78 @@ Future<void> register(
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Erreur d\'inscription: ${e.toString()}')),
     );
+  }
+}
+
+bool isTokenExpired(String token) {
+  final String? expirationClaim = getClaimValue(token, 'exp');
+  if (expirationClaim == null) {
+    throw Exception('Le token ne contient pas de claim "exp".');
+  }
+
+  final int expirationTimestamp = int.parse(expirationClaim);
+  final DateTime expirationDate =
+      DateTime.fromMillisecondsSinceEpoch(expirationTimestamp * 1000);
+
+  return DateTime.now().isAfter(expirationDate);
+}
+
+bool isValidEmail(String email) {
+  final RegExp emailRegex = RegExp(
+    r'^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$',
+    caseSensitive: false,
+    multiLine: false,
+  );
+  return emailRegex.hasMatch(email.trim());
+}
+
+Future<void> logout(BuildContext context) async {
+  await removeToken('access_token');
+  await removeToken('refresh_token');
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => const LoginPage()),
+  );
+}
+
+Map<String, String> parseJwt(String token) {
+  final parts = token.split('.');
+  if (parts.length != 3) {
+    throw Exception('JWT invalide');
+  }
+  final payload = parts[1];
+  final normalized = base64Url.normalize(payload);
+  final decodedBytes = base64Url.decode(normalized);
+  final Map<String, dynamic> decodedMap = jsonDecode(utf8.decode(decodedBytes));
+
+  return decodedMap.map((key, value) => MapEntry(key, value.toString()));
+}
+
+String? getClaimValue(String token, String key) {
+  final parsedToken = parseJwt(token);
+  return parsedToken[key];
+}
+
+Future<void> loadTokenState() async {
+  final String? token = await getToken('access_token');
+  if (token != null) {
+    if (isTokenExpired(token)) {
+      print('token expired');
+      await removeToken('access_token');
+      final String? refresh_token = await getToken('refresh_token');
+      if (refresh_token != null) {
+        if (isTokenExpired(refresh_token)) {
+          print('refresh token expired');
+        } else {
+          await refreshToken(refresh_token);
+        }
+      } else {
+        print('no refresh_token available');
+      }
+    } else {
+      print('token not expired');
+    }
+  } else {
+    print('token not null');
   }
 }
