@@ -7,7 +7,7 @@ import 'authentication_service.dart';
 class ApiService {
   static const String prodBaseUrl =
       'fastapitodolist-production.up.railway.app/logs';
-  static const String devBaseUrl = 'http://127.0.0.1:8000/logs';
+  static const String devBaseUrl = 'http://192.168.0.109:8000/logs';
 
 
   Future<List<LogModel>> fetchTodolistLogs({int? skip , int? limit}) async {
