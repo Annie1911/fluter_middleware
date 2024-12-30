@@ -5,7 +5,7 @@ import '../../services/api_service.dart';
 class LogDetailsScreen extends StatelessWidget {
   final int logId;
 
-  const LogDetailsScreen({Key? key, required this.logId}) : super(key: key);
+  const LogDetailsScreen({super.key, required this.logId});
 
   @override
   Widget build(BuildContext context) {
@@ -144,8 +144,7 @@ class InfoSection extends StatelessWidget {
   final String title;
   final List<InfoField> fields;
 
-  const InfoSection({Key? key, required this.title, required this.fields})
-      : super(key: key);
+  const InfoSection({super.key, required this.title, required this.fields});
 
   @override
   Widget build(BuildContext context) {
@@ -174,11 +173,11 @@ class InfoField extends StatelessWidget {
   final String value;
 
   const InfoField({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

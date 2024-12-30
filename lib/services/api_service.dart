@@ -21,7 +21,7 @@ class ApiService {
         url += '?limit=$limit';
       }
     }
-    final token = await getToken(); // Récupération du token
+    final token = await getToken('access_token'); // Récupération du token
     if (token == null) {
       throw Exception('No access token found');
     }
@@ -45,7 +45,7 @@ class ApiService {
   }
   /// Récupération d'un log spécifique par son ID
   Future<LogModel> fetchTodoListLog(int logId) async {
-    final token = await getToken(); // Récupération du token
+    final token = await getToken('access_token'); // Récupération du token
     if (token == null) {
       throw Exception('No access token found');
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:programation_distribued_project/screens/home_screen.dart';
 import 'log_screen.dart';
 
 class LogApp extends StatelessWidget {
@@ -11,7 +12,7 @@ class LogApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.blue,
       ),
-      home: MainScreen(),
+      home: const MainScreen(),
     );
   }
 }
@@ -27,9 +28,9 @@ class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
   final List<Widget> pages = [
-    HomeScreen(),
+    const HomePage(),
     LogsScreen(),
-    PlaceholderWidget(label: 'Settings'),
+    const PlaceholderWidget(label: 'Settings'),
   ];
 
   final List<String> titles = [
@@ -63,17 +64,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child:
-          Text('Welcome to the Home Screen!', style: TextStyle(fontSize: 18)),
-    );
-  }
-}
 
 class PlaceholderWidget extends StatelessWidget {
   final String label;

@@ -4,6 +4,8 @@ import 'log_detail_screen.dart';
 import '../services/api_service.dart';
 
 class LogsScreen extends StatefulWidget {
+  const LogsScreen({super.key});
+
   @override
   _LogsScreenState createState() => _LogsScreenState();
 }
@@ -75,8 +77,7 @@ class LogCard extends StatelessWidget {
   final LogModel log;
   final VoidCallback onTap;
 
-  const LogCard({Key? key, required this.log, required this.onTap})
-      : super(key: key);
+  const LogCard({super.key, required this.log, required this.onTap});
 
   Color _getStatusColor(int statusCode) {
     if (statusCode >= 200 && statusCode < 300) {
