@@ -68,7 +68,7 @@ Future<void> initializeWebSocket(
         WebSocketService(notificationService: notificationService);
 
     // Connexion WebSocket avec l'URL correcte
-    String websocketUrl = 'ws://192.168.0.109:8000/ws/notifications';
+    String websocketUrl = 'ws://127.0.0.1:8000/ws/notifications';
     Uri uri = Uri.parse(websocketUrl);
     print('Connexion à l\'URL : $uri');
 

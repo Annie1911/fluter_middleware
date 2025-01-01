@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/authentication_service.dart';
 import '../services/notification_service.dart';
-import '../services/websocket_service.dart'; // Importation du service WebSocket
+import '../services/websocket_service.dart'; // WebSocket service import
 import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   late String accessToken;
   late NotificationService notificationService;
-  late WebSocketService websocketService; // Déclaration du service WebSocket
+  late WebSocketService websocketService;
 
   @override
   void initState() {
@@ -30,13 +30,12 @@ class HomePageState extends State<HomePage> {
       setState(() {
         accessToken = token;
       });
-      // Initialisation du service WebSocket et connexion
-      websocketService =
-          WebSocketService(notificationService: notificationService);
+      // WebSocket service initialization and connection
+      websocketService = WebSocketService(notificationService: notificationService);
       await websocketService.connectToWebSocket(
-          'ws://192.168.0.109:8000/ws/notifications', accessToken);
+          'ws://127.0.0.1:8000/ws/notifications', accessToken);
     } else {
-      // Si le token est introuvable, rediriger vers la page de connexion
+      // If token is not found, redirect to the login page
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -46,9 +45,11 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.primary,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -56,12 +57,11 @@ class HomePageState extends State<HomePage> {
             backgroundColor: Colors.grey[200],
             child: Icon(
               Icons.person,
-              color: Colors.white,
+              color: colorScheme.primary,
               size: 30,
             ),
           ),
         ),
-        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.logout, color: Colors.grey[200]),
@@ -71,10 +71,22 @@ class HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: const Center(
-        child: Text(
-          'Welcome to the Home Screen!',
-          style: TextStyle(fontSize: 18),
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg_img.png'),
+              fit: BoxFit.cover,
+              repeat: ImageRepeat.noRepeat,
+            ),
+          ),
+          child: Text(
+            'Welcome to the Home Screen!',
+            style: TextStyle(
+              fontSize: 18,
+              color: colorScheme.background,
+            ),
+          ),
         ),
       ),
     );
