@@ -10,10 +10,22 @@ class ApiService {
   static const String devBaseUrl = 'http://127.0.0.1:8000/logs';
 
 
-  Future<List<LogModel>> fetchTodolistLogs() async {
+  Future<List<LogModel>> fetchTodolistLogs({int? skip , int? limit}) async {
     String url = '$devBaseUrl/get-logs';
 
-    final token = await getToken(); // Récupération du token
+    if (skip != null) {
+      url += '?skip=$skip';
+      if (limit!= null) {
+        url += '&limit=$limit';
+      }
+    }
+    else{
+      if (limit != null) {
+        url += '?limit=$limit';
+      }
+    }
+    final token = await getToken('access_token'); // Récupération du token
+
     if (token == null) {
       throw Exception('No access token found');
     }
@@ -38,7 +50,7 @@ class ApiService {
 
   /// Récupération d'un log spécifique par son ID
   Future<LogModel> fetchTodoListLog(int logId) async {
-    final token = await getToken(); // Récupération du token
+    final token = await getToken('access_token'); // Récupération du token
     if (token == null) {
       throw Exception('No access token found');
     }

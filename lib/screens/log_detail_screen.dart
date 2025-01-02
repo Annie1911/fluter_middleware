@@ -5,14 +5,16 @@ import '../../services/api_service.dart';
 class LogDetailsScreen extends StatelessWidget {
   final int logId;
 
-  const LogDetailsScreen({Key? key, required this.logId}) : super(key: key);
+  const LogDetailsScreen({super.key, required this.logId});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Log Details"),
-        backgroundColor: Colors.teal,
+        backgroundColor: colorScheme.primary,
       ),
       body: FutureBuilder<LogModel>(
         future: ApiService().fetchTodoListLog(logId),
@@ -39,17 +41,17 @@ class LogDetailsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Section Header with Icon
+
                       Row(
                         children: [
-                          const Icon(Icons.info, size: 30, color: Colors.teal),
+                          Icon(Icons.info, size: 30, color: colorScheme.primary),
                           const SizedBox(width: 10),
                           Text(
                             "Log Details",
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Colors.teal.shade700,
+                              color: colorScheme.primary,
                             ),
                           ),
                         ],
@@ -118,7 +120,6 @@ class LogDetailsScreen extends StatelessWidget {
                             icon: Icons.error_outline,
                             label: "Error Message",
                             value: (log.errorMessage ?? "").isNotEmpty ? log.errorMessage! : "None",
-
                           ),
                           InfoField(
                             icon: Icons.date_range,
@@ -139,16 +140,17 @@ class LogDetailsScreen extends StatelessWidget {
   }
 }
 
-// Section for grouping fields with a title
+
 class InfoSection extends StatelessWidget {
   final String title;
   final List<InfoField> fields;
 
-  const InfoSection({Key? key, required this.title, required this.fields})
-      : super(key: key);
+  const InfoSection({super.key, required this.title, required this.fields});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -157,7 +159,7 @@ class InfoSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.teal.shade700,
+            color: colorScheme.primary
           ),
         ),
         const SizedBox(height: 10),
@@ -167,27 +169,29 @@ class InfoSection extends StatelessWidget {
   }
 }
 
-// Widget for individual fields
+
 class InfoField extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
 
   const InfoField({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.teal),
+          Icon(icon, color: colorScheme.primaryContainer),
           const SizedBox(width: 10),
           Text(
             "$label: ",
@@ -199,8 +203,8 @@ class InfoField extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                color: Colors.teal,
+              style: TextStyle(
+                color: colorScheme.primary,
               ),
               overflow: TextOverflow.ellipsis,
             ),
