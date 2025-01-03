@@ -33,7 +33,7 @@ class HomePageState extends State<HomePage> {
       // WebSocket service initialization and connection
       websocketService = WebSocketService(notificationService: notificationService);
       await websocketService.connectToWebSocket(
-          'ws://127.0.0.1:8000/ws/notifications', accessToken);
+          'ws://192.168.0.109:8000/ws/notifications', accessToken);
     } else {
       // If token is not found, redirect to the login page
       Navigator.pushReplacement(
@@ -75,7 +75,7 @@ class HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/bg_img.png'),
+              image: AssetImage('assets/image.png'),
               fit: BoxFit.cover,
               repeat: ImageRepeat.noRepeat,
             ),

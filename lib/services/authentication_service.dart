@@ -7,7 +7,7 @@ import '../screens/log_page.dart';
 import '../screens/login_page.dart';
 
 const String prodBaseUrl = 'fastapitodolist-production.up.railway.app/users';
-const String devBaseUrl = 'http://127.0.0.1:8000/users';
+const String devBaseUrl = 'http://192.168.0.109:8000/users';
 Future<void> login(
     String username, String password, BuildContext context) async {
   if (username.isEmpty || password.isEmpty) {
@@ -25,7 +25,7 @@ Future<void> login(
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'username': username.trim(),
+        'credential': username.trim(),
         'password': password.trim(),
       }),
     );
@@ -120,7 +120,7 @@ Future<void> register(
     String firstName,
     String password,
    BuildContext context) async {
-  final url = Uri.parse('$devBaseUrl/create-user');
+  final url = Uri.parse('$devBaseUrl/create');
 
   if (email.isEmpty ||username.isEmpty ||lastName.isEmpty || firstName.isEmpty || password.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
