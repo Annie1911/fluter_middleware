@@ -7,11 +7,11 @@ import 'authentication_service.dart';
 class ApiService {
   static const String prodBaseUrl =
       'fastapitodolist-production.up.railway.app/logs';
-  static const String devBaseUrl = 'http://192.168.0.109:8000/logs';
+  static const String devBaseUrl = 'http://192.168.43.49:8000/logs';
 
 
   Future<List<LogModel>> fetchTodolistLogs({int? skip , int? limit}) async {
-    String url = '$devBaseUrl/get-logs';
+    String url = '$devBaseUrl/read-all';
 
     if (skip != null) {
       url += '?skip=$skip';
@@ -56,7 +56,7 @@ class ApiService {
     }
 
     final response = await http.get(
-      Uri.parse('$devBaseUrl/get-log/$logId'),
+      Uri.parse('$devBaseUrl/read-one/$logId'),
       headers: {
         'Authorization': 'Bearer $token', // Ajout du token dans l'en-tête
       },
